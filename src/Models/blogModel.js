@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
+const authourModel = require('./authourModel');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
-const bookSchema = new mongoose.Schema( {
+
+const BlogSchema = new mongoose.Schema( {
     "title": {
         type: String,
         require: true
@@ -8,7 +11,13 @@ const bookSchema = new mongoose.Schema( {
     "body":{
         type: String,
         require: true,
-        ref: " "
+       
+    },
+    "authorId":{
+        type: ObjectId,
+        ref: "Mini-author",
+        required:true
+
     },
     "tags": {
         type: String,
@@ -21,23 +30,26 @@ const bookSchema = new mongoose.Schema( {
     } ,
     "subcategory": {
         type: String
-    },         // ["Non fiction", "Self Help"],
+    },       
+    "deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,
+    // ["Non fiction", "Self Help"],
     "isdeleted": {
         type: Boolean,
         default: false
     },
-    "deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,
+    "publishedAt": "", // if published is true publishedAt will have a date 2021-09-17T04:25:07.803Z
+
     "isPublished": {
         type: Boolean,
         default: false
     },
-    "publishedAt": "", // if published is true publishedAt will have a date 2021-09-17T04:25:07.803Z
+   
     
 
 }, { timestamps: true });
 
 
-module.exports = mongoose.model('Mini-Blog', blogSchema)
+module.exports = mongoose.model('Blog', BlogSchema)
 
 
 
