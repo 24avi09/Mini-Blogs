@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const authourModel = require('./authourModel');
+const authourModel = require('./authorModel');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 
@@ -42,7 +42,7 @@ const BlogSchema = new mongoose.Schema( {
     "isPublished": {
         type: Boolean,
         default: false
-    },
+    }
    
     
 

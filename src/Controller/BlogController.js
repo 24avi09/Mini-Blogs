@@ -1,27 +1,39 @@
-const authourModel = require("../Models/authourModel");
+const authourModel = require("../Models/authorModel");
 const blogModel = require("../Models/blogModel");
-//const blogmodel= require("../Models/blogModel");
-//const {emailRegex}= require("../validators/validator")
-
+const mongoose = require("mongoose");
+const moment = require("moment")
 
 const CreateBlog = async function (req, res) {
-    try{
-     let data = req.body;
+  try {
+    let data = req.body;
+    let CurrentDate = moment().format("DD MM YYYY hh:mm:ss");
 
-     
-     let authorId= await authourModel.findById(data.authorId)
-   if (!authorId){
-    return res.staus(400).send({data: " author is not present."})}
+    if (data["isPublished"] == true) {
+      data["publishedAt"] = CurrentDate
+    }
+    if (data["isdeleted"] == true) {
+      data["deletedAt"] = CurrentDate
+    }
 
-    // if(!emailRegex(email)) return res.status(400).send({status: false, message: "Email id is invalid!"})
-     
-     let savedData = await blogModel.create(data);
-     res.status(201).send({ msg: savedData });}
+    let authorId = await authourModel.findById(data["authorId"]);
+    let _idAuthorId = authorId._id
+
+    if (!authorId) {
+      return res.staus(400).send({ data: " author is not present." });
+    }
+    if (mongoose.isValidObjectId(_idAuthorId) === false) {
+      return res.send({ Error: "authorId is invalid" });}
+
+      let savedData = await blogModel.create(data);
+      res.status(201).send({ msg: savedData });
     
-     catch (error) {
-       res.status(500).send(error.message)
-     }
-   };
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
 
+module.exports.CreateBlog = CreateBlog;
 
-   module.exports.CreateBlog=CreateBlog;
+//  else if (mongoose.isValidObjectId(user) === false) {
+// res.send({ Error: "userId is not present " });
+// }
