@@ -90,53 +90,53 @@ const updateBlogs = async function (req, res) {
 };
 
 const deleteBlog = async function (req, res) {
-
   try {
-    let blogId = req.params
+    let blogId = req.params;
 
-     if (!blogId) {
-       return res.status(400).send({ status: false, msg: " blogId is invalid." }); 
-     }
-    let authorId = await blogModel.findOne({_id : blogId.blogId})
+    if (!blogId) {
+      return res
+        .status(400)
+        .send({ status: false, msg: " blogId is invalid." });
+    }
+    let authorId = await blogModel.findOne({ _id: blogId.blogId });
 
     if (!authorId) {
-      return res.status(404).send({ status: false, msg: " Blog does not exist." });
+      return res
+        .status(404)
+        .send({ status: false, msg: " Blog does not exist." });
     }
-    if(authorId["isdeleted"] == true){
-      return res.status(404).send({ status: false, msg: " Blog already deleted." });
+    if (authorId["isdeleted"] == true) {
+      return res
+        .status(404)
+        .send({ status: false, msg: " Blog already deleted." });
     }
-    a= await blogModel.updateOne(
-      {_id : blogId.blogId},
-      {$set: {isdeleted: true}}
-    )
-   // let x=true
+    a = await blogModel.updateOne(
+      { _id: blogId.blogId },
+      { $set: { isdeleted: true } }
+    );
+    // let x=true
     // authorId["isdeleted"]= x
-    res.status(200).send("acvv")
-
+    res.status(200).send("acvv");
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
-    
   }
-}
-
+};
 
 const deletedocs = async function (req, res) {
-try {
-  let x= req.query
+  try {
+    let data = req.query;
+    let blog = await blogModel.updateMany(
+        data,
+      { $set: { isdeleted: true } },
+      { new: true }
+    );
+    if (!blog) {
+      return res.status(404).send({ status: false, data: "data not found" });
+    }
+    res.send("acbb");
+  } catch (error) {
+    res.status(500).send({ status: false, error: error.message });
+  }
+};
 
-let blog = await blogModel.updateMany(
-   x ,
-  {$set:{isdeleted:true}},
-  {new:true}
-)
-if(!blog){
-  return res.status(404).send({data:"data not found"})
-}
-res.send()
-} catch (error) {
-  res.status(500).send({ status: false, error: error.message });
-}
-
-}
-
-module.exports = { CreateBlog, getBlogs, updateBlogs ,deleteBlog, deletedocs};
+module.exports = { CreateBlog, getBlogs, updateBlogs, deleteBlog, deletedocs };
