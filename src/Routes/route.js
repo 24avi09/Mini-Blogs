@@ -1,6 +1,6 @@
 const express =require("express");
 const router= express.Router();
-const {CreateBlog, getBlogs, updateBlogs,deleteBlog}= require("../Controller/BlogController");
+const {CreateBlog, getBlogs, updateBlogs,deleteBlog,deletedocs}= require("../Controller/BlogController");
 const {createAuthor}= require("../Controller/authorController");
 
 
@@ -14,5 +14,7 @@ router.get("/blogs", getBlogs)// API for getting of blogs
 router.put("/blogs/:blogId", updateBlogs)// API for updating of blogs 
 
 router.delete("/blogs/:blogId", deleteBlog)
+
+router.delete("/blogs", deletedocs)
 
 module.exports= router;
