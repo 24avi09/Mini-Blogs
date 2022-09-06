@@ -37,11 +37,10 @@ const getBlogs = async function (req, res) {
     let filter = req.query
     let authorId = await blogModel.find(filter);
     for (let i = 0; i < authorId.length; i++) {
-      if (authorId[i]["isdeleted"] === false && authorId[i]["isPublished"] === true ) {
-        return res.status(200).send({status: true, data: authorId})
-      }else {
+      if (authorId[i]["isdeleted"] !== false && authorId[i]["isPublished"] !== true ) {
         return res.status(400).send({ status:false, error: "isdeleted or isPublished is not valid"});
       }
+      return res.status(200).send({status: true, data: authorId})
     }
   } catch (error) {
     res.status(500).send({ status:false, error: error.message});
