@@ -7,14 +7,6 @@ const CreateBlog = async function (req, res) {
   try {
     let data = req.body;
     let CurrentDate = moment().format("DD MM YYYY hh:mm:ss");
-
-    if (data["isPublished"] == true) {
-      data["publishedAt"] = CurrentDate;
-    }
-    if (data["isdeleted"] == true) {
-      data["deletedAt"] = CurrentDate;
-    }
-
     let authorId = await authourModel.findById(data["authorId"]);
     let _idAuthorId = authorId._id;
 
@@ -24,6 +16,14 @@ const CreateBlog = async function (req, res) {
     if (mongoose.isValidObjectId(_idAuthorId) === false) {
       return res.status(400).send({ Error: "authorId is invalid" });
     }
+
+    if (data["isPublished"] == true) {
+      data["publishedAt"] = CurrentDate;
+    }
+    if (data["isdeleted"] == true) {
+      data["deletedAt"] = CurrentDate;
+    }
+
 
     let savedData = await blogModel.create(data);
     res.status(201).send({status:true, data: savedData });
@@ -39,6 +39,8 @@ const getBlogs = async function (req, res) {
     for (let i = 0; i < authorId.length; i++) {
       if (authorId[i]["isdeleted"] === false && authorId[i]["isPublished"] === true ) {
         return res.status(200).send({status: true, data: authorId})
+      }else {
+        return res.status(400).send({ status:false, error: "isdeleted or isPublished is not valid"});
       }
     }
   } catch (error) {
