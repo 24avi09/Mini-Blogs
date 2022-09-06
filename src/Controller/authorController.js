@@ -6,15 +6,13 @@ const createAuthor = async function(req,res){
         let authorDetails = req.body
         let email = authorDetails["email"]
 
-       
-
     if(!validateEmail(email) ) return res.status(400).send({status: false, message: "Email id is invalid!"})
     let savedData = await authorModel.create(authorDetails);
-    res.status(201).send({ msg: savedData });  
+    res.status(201).send({status: true, data: savedData });  
             
         }
     catch (error) {
-       res.status(500).send(error.message)
+       res.status(500).send({ status:false, error: error.message})
     }
     
 }
