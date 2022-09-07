@@ -10,13 +10,13 @@ const authorSchema = new mongoose.Schema({
        required:true 
     },
     title:{
-        type:String,
+        type: String,
         enum:["Mr","Mrs","Miss"],
         required:true
 
     },
     email:{
-        type:String,
+        type: String,
         required:true,
         unique:true
     },
@@ -24,8 +24,6 @@ const authorSchema = new mongoose.Schema({
       type: String,
       required:true  
     }
-
-
 
 },{timestamps:true});
 

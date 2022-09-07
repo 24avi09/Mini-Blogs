@@ -20,6 +20,6 @@ router.delete("/blogs/:blogId",authenticate, deleteBlog)
 
 router.delete("/blogs",authenticate, deletedocs)
 
-router.post("/login",authenticate, loginUser )
+router.post("/login", loginUser )
 
 module.exports= router;
