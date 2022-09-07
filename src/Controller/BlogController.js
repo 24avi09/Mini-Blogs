@@ -103,28 +103,23 @@ const updateBlogs = async function (req, res) {
 
 const deleteBlog = async function (req, res) {
   try {
-    let blogId = req.params;
+    let idOfBlog = req.params;
 
-    if (!mongoose.isValidObjectId(blogId.blogId)) {
+    if (!mongoose.isValidObjectId(idOfBlog.blogId)) {
       return res
         .status(400)
         .send({ status: false, msg: "blogId is invalid" });
     }
 
-    let blogDetails = await blogModel.findOne({ _id: blogId.blogId });
+    let getBlogDetails = await blogModel.findOne({ _id: idOfBlog.blogId });
 
-    if (!blogDetails || blogDetails["isdeleted"] == true) {
+    if (!getBlogDetails || getBlogDetails["isdeleted"] == true) {
       return res
         .status(404)
         .send({ status: false, msg: " Blog does not exist." });
     }
-    // if (blogDetails["isdeleted"] == true) {
-    //   return res
-    //     .status(404)
-    //     .send({ status: false, msg: " Blog already deleted." });
-    // }
     let deleteBlog = await blogModel.updateOne(
-      { _id: blogId.blogId },
+      { _id: idOfBlog.blogId },
       { $set: { isdeleted: true } }
     );
     res.status(200).send();
