@@ -57,33 +57,31 @@ const updateBlogs = async function (req, res) {
     let blogId = req.params;
     let data = req.body;
     let title = data["title"],
-      body = data["body"],
-      tag = data["tags"],
-      subcategories = data["subcategory"];
+    body = data["body"],
+    tag = data["tags"],
+    subcategories = data["subcategory"];
+    let CurrentDate = moment().format("DD MM YYYY hh:mm:ss");
 
     if (!blogId) {
       return res.staus(400).send({ status: false, msg: " Blog is invalid." });
     }
 
-    let CurrentDate = moment().format("DD MM YYYY hh:mm:ss");
 
-    let authorId = await blogModel.findByIdAndUpdate(
-      { _id: blogId.blogId },
+    let authorId = await blogModel.findOneAndUpdate(
+      { _id: blogId.blogId , isPublished: false },
       {
         $push: { tags: tag, subcategory: subcategories },
-        $set: { title: title, body: body, isPublished: true },
+        $set: { title: title, body: body, isPublished: true , publishedAt: CurrentDate },
       },
       { new: true }
     );
-    if (authorId["isPublished"] == true) {
-      authorId["publishedAt"] = CurrentDate;
-    }
 
     if (authorId["isdeleted"] !== false) {
       return res.status(404).send({ status: false, msg: "Blog not exist." });
     }
 
     res.status(200).send({ status: true, data: authorId });
+
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
@@ -130,10 +128,10 @@ const deletedocs = async function (req, res) {
       { $set: { isdeleted: true } },
       { new: true }
     );
-    if (!blog) {
-      return res.status(404).send({ status: false, data: "data not found" });
+    if (blog["matchedCount"] === 0) {
+      return res.status(404).send({ status: false, data: "data not exist" });
     }
-    res.send("acbb");
+    res.send();
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
