@@ -73,7 +73,7 @@ const updateBlogs = async function (req, res) {
         .status(400)
         .send({ status: false, error: "blogId is invalid" });
     }
-
+    
     let updateBlog = await blogModel.findOneAndUpdate(
       { _id: idOfBlog.blogId , isPublished: false },
       {
@@ -87,7 +87,7 @@ const updateBlogs = async function (req, res) {
       },
       { new: true }
     );
-
+    
     if (!updateBlog) {
       return res.status(404).send({ status: false, msg: "Blog does not exist." });
     }
@@ -105,30 +105,30 @@ const deleteBlog = async function (req, res) {
   try {
     let blogId = req.params;
 
-    if (!blogId) {
+    if (!mongoose.isValidObjectId(blogId.blogId)) {
       return res
         .status(400)
-        .send({ status: false, msg: " blogId is invalid." });
+        .send({ status: false, msg: "blogId is invalid" });
     }
-    let authorId = await blogModel.findOne({ _id: blogId.blogId });
 
-    if (!authorId) {
+    let blogDetails = await blogModel.findOne({ _id: blogId.blogId });
+
+    if (!blogDetails || blogDetails["isdeleted"] == true) {
       return res
         .status(404)
         .send({ status: false, msg: " Blog does not exist." });
     }
-    if (authorId["isdeleted"] == true) {
-      return res
-        .status(404)
-        .send({ status: false, msg: " Blog already deleted." });
-    }
-    a = await blogModel.updateOne(
+    // if (blogDetails["isdeleted"] == true) {
+    //   return res
+    //     .status(404)
+    //     .send({ status: false, msg: " Blog already deleted." });
+    // }
+    let deleteBlog = await blogModel.updateOne(
       { _id: blogId.blogId },
       { $set: { isdeleted: true } }
     );
-    // let x=true
-    // authorId["isdeleted"]= x
-    res.status(200).send("acvv");
+    res.status(200).send();
+
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
@@ -140,12 +140,13 @@ const deletedocs = async function (req, res) {
     let blog = await blogModel.updateMany(
       data,
       { $set: { isdeleted: true } },
-      { new: true }
     );
     if (blog["matchedCount"] === 0) {
-      return res.status(404).send({ status: false, data: "data not exist" });
+      return res.status(404).send({ status: false, msg: "Blog not exist" });
     }
+
     res.send();
+
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }

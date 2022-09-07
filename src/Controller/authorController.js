@@ -1,5 +1,5 @@
 const authorModel = require("../Models/authorModel")
-const {validateEmail} = require("../validators/validator")
+// const {validateEmail} = require("../validators/validator")
 
 const createAuthor = async function(req,res){
     try {
