@@ -176,11 +176,11 @@ const loginUser = async function (req, res) {
     let emailId = req.body.email;
     let password = req.body.password;
 
-    let user = await authourModel.findOne({
+    let authorDetails = await authourModel.findOne({
       email: emailId,
       password: password,
     });
-    if (!user)
+    if (!authorDetails)
       return res.status(404).send({
         status: false,
         msg: "email or the password is not corerct",
@@ -188,10 +188,10 @@ const loginUser = async function (req, res) {
 
     let token = jwt.sign(
       {
-        userId: user._id.toString(),
+        userId: authorDetails._id.toString(),
         team: "15",
       },
-      "mini-blog-site"
+      "mini-blog-site_batch-15"
     );
 
     res.setHeader("x-auth-token", token);
@@ -201,6 +201,7 @@ const loginUser = async function (req, res) {
     return res.status(500).send({ msg: "Server Error" });
   }
 };
+
 
 
 module.exports = { createBlog, getBlogs, updateBlogs, deleteBlog, deletedocs, loginUser };
