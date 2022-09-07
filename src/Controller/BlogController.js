@@ -2,8 +2,12 @@ const authourModel = require("../Models/authorModel");
 const blogModel = require("../Models/blogModel");
 const mongoose = require("mongoose");
 const moment = require("moment");
+const jwt = require("jsonwebtoken");
 
-const CreateBlog = async function (req, res) {
+
+
+
+const createBlog = async function (req, res) {
   try {
     let data = req.body;
     let CurrentDate = moment().format("DD MM YYYY hh:mm:ss");
@@ -41,6 +45,10 @@ const CreateBlog = async function (req, res) {
   }
 };
 
+
+
+
+
 const getBlogs = async function (req, res) {
   try {
     let filter = req.query;
@@ -58,6 +66,10 @@ const getBlogs = async function (req, res) {
     res.status(500).send({ status: false, error: error.message });
   }
 };
+
+
+
+
 
 const updateBlogs = async function (req, res) {
   try {
@@ -101,6 +113,11 @@ const updateBlogs = async function (req, res) {
   }
 };
 
+
+
+
+
+
 const deleteBlog = async function (req, res) {
   try {
     let idOfBlog = req.params;
@@ -129,6 +146,10 @@ const deleteBlog = async function (req, res) {
   }
 };
 
+
+
+
+
 const deletedocs = async function (req, res) {
   try {
     let data = req.query;
@@ -147,4 +168,39 @@ const deletedocs = async function (req, res) {
   }
 };
 
-module.exports = { CreateBlog, getBlogs, updateBlogs, deleteBlog, deletedocs };
+
+
+
+const loginUser = async function (req, res) {
+  try {
+    let emailId = req.body.email;
+    let password = req.body.password;
+
+    let user = await authourModel.findOne({
+      email: emailId,
+      password: password,
+    });
+    if (!user)
+      return res.status(404).send({
+        status: false,
+        msg: "email or the password is not corerct",
+      });
+
+    let token = jwt.sign(
+      {
+        userId: user._id.toString(),
+        team: "15",
+      },
+      "mini-blog-site"
+    );
+
+    res.setHeader("x-auth-token", token);
+    return res.status(200).send({ status: true, data: token });
+
+  } catch (error) {
+    return res.status(500).send({ msg: "Server Error" });
+  }
+};
+
+
+module.exports = { createBlog, getBlogs, updateBlogs, deleteBlog, deletedocs, loginUser };
