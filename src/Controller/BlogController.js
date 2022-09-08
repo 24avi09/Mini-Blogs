@@ -3,37 +3,22 @@ const blogModel = require("../Models/blogModel");
 const mongoose = require("mongoose");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
-const {
-  isValidName,
-  isValidBody,
-  isValidTag,
-  isValidAuthorId,
-} = require("../validator/validator");
+const { isValidName, isValidBody, isValidTag, isValidAuthorId, } = require("../validator/validator");
 
 const createBlog = async function (req, res) {
   try {
     let data = req.body;
     let CurrentDate = moment().format("DD MM YYYY hh:mm:ss");
-    let [title, body, authorId, tags, category] = [
-      data.title,
-      data.body,
-      data.authorId,
-      data.tags,
-      data.category,
-    ];
+    let [title, body, authorId, tags, category] = [ data.title, data.body, data.authorId, data.tags, data.category, ];
+
     if (!title || !body || !authorId || !tags || !category) {
       return res
         .status(400)
         .send({ status: false, msg: "Please give all required input" });
     }
 
-    let [Title, Body, AuthorId, Tags, Category] = [
-      isValidName(title),
-      isValidBody(body),
-      isValidAuthorId(authorId),
-      isValidTag(tags),
-      isValidName(category),
-    ];
+    let [Title, Body, AuthorId, Tags, Category] = [ isValidName(title), isValidBody(body), isValidAuthorId(authorId), isValidTag(tags), isValidName(category),];
+
     if (!Title || !Body || !AuthorId || !Tags || !Category) {
       return res
         .status(400)
@@ -62,9 +47,15 @@ const createBlog = async function (req, res) {
   }
 };
 
+
 const getBlogs = async function (req, res) {
   try {
     let filter = req.query;
+
+    if (Object.keys(filter) == 0) {
+      return res.status(404).send({ status: false, msg: "Provide a valid input" });
+    }
+    
     let getBlogsDetails = await blogModel.find({
       $and: [filter, { isdeleted: false, isPublished: true }],
     });
@@ -80,25 +71,23 @@ const getBlogs = async function (req, res) {
   }
 };
 
+
 const updateBlogs = async function (req, res) {
   try {
     let blogId = req.params.blogId;
     let data = req.body;
     let tokensId = req.decodedToken.userId;
-
-    let [title, body, tag, subcategories] = [
-      data["title"],
-      data["body"],
-      data["tags"],
-      data["subcategory"],
-    ];
-
+    let [title, body, tag, subcategories] = [ data["title"], data["body"], data["tags"], data["subcategory"] ];
     let CurrentDate = moment().format("DD MM YYYY hh:mm:ss");
 
     if (!mongoose.isValidObjectId(blogId)) {
       return res
         .status(400)
         .send({ status: false, error: "blogId is invalid" });
+    }
+
+    if (data) {
+      return res.status(404).send({ status: false, msg: "Provide a input to update" });
     }
 
     let updateBlog = await blogModel.findOneAndUpdate(
@@ -133,6 +122,7 @@ const updateBlogs = async function (req, res) {
   }
 };
 
+
 const deleteBlog = async function (req, res) {
   try {
     let blogId = req.params.blogId;
@@ -142,7 +132,7 @@ const deleteBlog = async function (req, res) {
       return res.status(400).send({ status: false, msg: "blogId is invalid" });
     }
 
-    let getBlogDetails = await blogModel.findOne({ _id: blogId });
+    let getBlogDetails = await blogModel.findOne({ _id: blogId , isPublished: true });
 
     if (!getBlogDetails || getBlogDetails["isdeleted"] == true) {
       return res
@@ -155,23 +145,33 @@ const deleteBlog = async function (req, res) {
         .status(401)
         .send({ status: false, message: `Unauthorized access` });
     }
+
     let deleteBlog = await blogModel.updateOne(
       { _id: blogId },
       { $set: { isdeleted: true } }
     );
+
     res.status(200).send();
+
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
 };
 
+
 const deletedocs = async function (req, res) {
   try {
     let query = req.query;
+    let data = {isPublished: true, ...query}
     let tokensId = req.decodedToken.userId;
+    
+    if (Object.keys(query) == 0) {
+      return res.status(404).send({ status: false, msg: "Provide a valid input" });
+      
+    }
 
-    let deleteBlogs = await blogModel.updateMany(query, {
-      $set: { isdeleted: true },
+    let deleteBlogs = await blogModel.updateMany(data, {
+      $set: { isdeleted: true  },
     });
 
     if (deleteBlogs["matchedCount"] === 0) {
@@ -190,10 +190,15 @@ const deletedocs = async function (req, res) {
   }
 };
 
+
 const loginUser = async function (req, res) {
   try {
     let emailId = req.body.email;
     let password = req.body.password;
+
+    if ( !emailId || !password ) {
+      return res.status(404).send({ status: false, msg: "Provide a valid input" });
+    }
 
     let authorDetails = await authourModel.findOne({
       email: emailId,
@@ -220,11 +225,4 @@ const loginUser = async function (req, res) {
   }
 };
 
-module.exports = {
-  createBlog,
-  getBlogs,
-  updateBlogs,
-  deleteBlog,
-  deletedocs,
-  loginUser,
-};
+module.exports = { createBlog, getBlogs, updateBlogs, deleteBlog, deletedocs, loginUser, };

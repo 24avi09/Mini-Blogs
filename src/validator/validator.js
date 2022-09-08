@@ -26,4 +26,19 @@ const isValidTag = function(title){
 const isValidAuthorId = function(title){
     return mongoose.isValidObjectId(title)
 }
-module.exports={isValidName, isValidTitle, isValidPassword , isValidBody, isValidTag , isValidAuthorId };
+
+const isValidEmail = function(email){
+        return /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email);
+
+}
+
+// validate: {
+//     validator: function (v) {
+//         return /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(v);
+//     }
+
+//     message: "Please enter a valid email"
+
+// }
+
+module.exports={isValidName, isValidTitle, isValidEmail, isValidPassword , isValidBody, isValidTag , isValidAuthorId };
