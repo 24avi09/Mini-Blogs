@@ -3,7 +3,7 @@ const blogModel = require("../Models/blogModel");
 const mongoose = require("mongoose");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
-const { isValidName, isValidBody, isValidTag, isValidAuthorId, } = require("../validator/validator");
+const { isValidName , isValidTag, isValidAuthorId, } = require("../validator/validator");
 
 const createBlog = async function (req, res) {
   try {
@@ -17,7 +17,7 @@ const createBlog = async function (req, res) {
         .send({ status: false, msg: "Please give all required input" });
     }
 
-    let [Title, Body, AuthorId, Tags, Category] = [ isValidName(title), isValidBody(body), isValidAuthorId(authorId), isValidTag(tags), isValidName(category),];
+    let [Title, Body, AuthorId, Tags, Category] = [ isValidName(title), isValidName(body), isValidAuthorId(authorId), isValidTag(tags), isValidName(category),];
 
     if (!Title || !Body || !AuthorId || !Tags || !Category) {
       return res
