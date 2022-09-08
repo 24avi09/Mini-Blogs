@@ -167,6 +167,9 @@ const deletedocs = async function (req, res) {
     
     if (Object.keys(query) == 0) {
       return res.status(404).send({ status: false, msg: "Provide a valid input" });
+    }
+    if (!query.authorId) {
+      return res.status(404).send({ status: false, msg: "autherId is required" });
       
     }
 
