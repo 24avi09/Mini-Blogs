@@ -86,7 +86,7 @@ const updateBlogs = async function (req, res) {
         .send({ status: false, error: "blogId is invalid" });
     }
 
-    if (data) {
+    if (Object.keys(data) == 0) {
       return res.status(404).send({ status: false, msg: "Provide a input to update" });
     }
 
