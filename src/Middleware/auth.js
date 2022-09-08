@@ -31,9 +31,9 @@ const authorization = async function (req, res, next) {
     let queryDetails = req.query;
     let queryAuthorId = req.query.authorId;
     let tokensId = req.decodedToken.userId;
-
+    let detailsofquery={...queryDetails}
     let blogDetails = await blogModel.find({
-      $or: [{ _id: pathBlogId }, queryDetails ]
+      $or: [{ _id: pathBlogId }, detailsofquery]
     });
     if (!blogDetails)
       return res.status(404).send({ status: false, msg: "Blog not available" });
