@@ -50,3 +50,18 @@ const BlogSchema = new mongoose.Schema( {
 
 
 module.exports = mongoose.model('Blog', BlogSchema)
+
+
+
+
+
+
+
+
+// if (!pathBlogId && Object.keys(queryDetails) >= 0) {
+//     let blogDetails = await blogModel.find(queryDetails);
+    
+//   }else if (!queryDetails && pathBlogId ) {
+    
+//     let blogDetails = await blogModel.findById(pathBlogId);
+//   }

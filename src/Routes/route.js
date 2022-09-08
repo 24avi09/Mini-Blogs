@@ -18,7 +18,7 @@ router.put("/blogs/:blogId",authenticate, authorization, updateBlogs)// API for 
 
 router.delete("/blogs/:blogId",authenticate,authorization, deleteBlog)
 
-router.delete("/blogs",authenticate, deletedocs)
+router.delete("/blogs",authenticate,authorization, deletedocs)
 
 router.post("/login", loginUser )
 
