@@ -139,3 +139,42 @@ Refer below sample
 #### Refer https://jsonplaceholder.typicode.com/guide/ for some fake blogs data.
 
 #### Note: Create a group database and use the same database in connection string by replacing `groupXDatabase
+
+
+if(!isValid(title)) {
+            res.status(400).send({status: false, message: 'Title is required'})
+            return
+        }
+
+
+
+
+
+
+// const authorization = async function (req, res, next) {
+  //   try {
+//     let pathBlogId = req.params.blogId;
+//     let queryDetails = req.query;
+//     let tokensId = req.decodedToken.userId;
+
+//     let blogDetails = await blogModel.find({
+//       $or: [{ _id: pathBlogId } , queryDetails ]
+//     });
+
+//     if (!blogDetails[0])
+//       return res.status(404).send({ status: false, msg: "Blog not available" });
+
+
+//     // for (let i = 0; i < blogDetails.length; i++) {
+      
+//     //   if ( tokensId != blogDetails[i]["authorId"].toString() ) {
+//     //     return res
+//     //       .status(404)
+//     //       .send({ status: false, msg: "Unknown user not authorized" });
+//     //   }
+//       next();
+//     // }  
+//   } catch (err) {
+//     return res.status(500).send({ status: false, msg: err.message });
+//   }
+// };
