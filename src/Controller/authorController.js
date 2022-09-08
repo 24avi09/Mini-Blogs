@@ -1,21 +1,39 @@
-const authorModel = require("../Models/authorModel")
-const validator = require("validator")
+const authorModel = require("../Models/authorModel");
+const validator = require("validator");
+const { isValidName, isvalidTitle , isvalidPassword, } = require("../validator/validator");
 
-const createAuthor = async function(req,res){
-    try {
-        let authorDetails = req.body
-        let email = authorDetails["email"]
+const createAuthor = async function (req, res) {
+  try {
+    let authorDetails = req.body;
+    let [fname, lname, title, email, password] = [
+      authorDetails.fname,
+      authorDetails.lname,
+      authorDetails.title,
+      authorDetails.email,
+      authorDetails.password,
+    ];
+    if (!fname || !lname || !title || !email || !password) {
+      return res
+        .status(400)
+        .send({ status: false, msg: "Please give all required input" });
+    }
 
-    if(! validator.isEmail(email) ) return res.status(400).send({status: false, message: "Email id is invalid!"})
+    let [firstname, lastname, Title, Email, Password ] = [
+      isValidName(fname),
+      isValidName(lname),
+      isvalidTitle(title),
+      validator.isEmail(email),
+      isvalidPassword(password),
+    ];
+    if (!firstname || !lastname || !Title || !Email || !Password ) {
+      return res.status(400).send({ status: false, message: "Enter a valid input" });
+    }
 
     let savedData = await authorModel.create(authorDetails);
-    res.status(201).send({status: true, data: savedData });  
-            
-        }
-    catch (error) {
-       res.status(500).send({ status:false, error: error.message})
-    }
-    
-}
+    res.status(201).send({ status: true, data: savedData });
+  } catch (error) {
+    res.status(500).send({ status: false, error: error.message });
+  }
+};
 
-module.exports = {createAuthor}
+module.exports = { createAuthor };

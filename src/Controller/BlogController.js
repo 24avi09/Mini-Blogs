@@ -3,21 +3,41 @@ const blogModel = require("../Models/blogModel");
 const mongoose = require("mongoose");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
+const {
+  isValidName,
+  isValidBody,
+  isValidTag,
+  isValidAuthorId,
+} = require("../validator/validator");
 
 const createBlog = async function (req, res) {
   try {
     let data = req.body;
     let CurrentDate = moment().format("DD MM YYYY hh:mm:ss");
-
-    if (!data["authorId"]) {
+    let [title, body, authorId, tags, category] = [
+      data.title,
+      data.body,
+      data.authorId,
+      data.tags,
+      data.category,
+    ];
+    if (!title || !body || !authorId || !tags || !category) {
       return res
         .status(400)
-        .send({ status: false, msg: " authorId is not present." });
+        .send({ status: false, msg: "Please give all required input" });
     }
-    if (!mongoose.isValidObjectId(data.authorId)) {
+
+    let [Title, Body, AuthorId, Tags, Category] = [
+      isValidName(title),
+      isValidBody(body),
+      isValidAuthorId(authorId),
+      isValidTag(tags),
+      isValidName(category),
+    ];
+    if (!Title || !Body || !AuthorId || !Tags || !Category) {
       return res
         .status(400)
-        .send({ status: false, msg: "authorId is invalid" });
+        .send({ status: false, message: "Enter a valid input" });
     }
 
     let authorDetails = await authourModel.findById(data["authorId"]);
