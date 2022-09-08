@@ -1,6 +1,6 @@
 const authorModel = require("../Models/authorModel");
 const validator = require("validator");
-const { isValidName, isvalidTitle , isvalidPassword, } = require("../validator/validator");
+const { isValidName, isValidTitle ,  isValidPassword, } = require("../validator/validator");
 
 const createAuthor = async function (req, res) {
   try {
@@ -21,9 +21,9 @@ const createAuthor = async function (req, res) {
     let [firstname, lastname, Title, Email, Password ] = [
       isValidName(fname),
       isValidName(lname),
-      isvalidTitle(title),
+      isValidTitle(title),
       validator.isEmail(email),
-      isvalidPassword(password),
+      isValidPassword(password),
     ];
     if (!firstname || !lastname || !Title || !Email || !Password ) {
       return res.status(400).send({ status: false, message: "Enter a valid input" });
