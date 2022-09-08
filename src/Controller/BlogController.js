@@ -4,9 +4,6 @@ const mongoose = require("mongoose");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 
-
-
-
 const createBlog = async function (req, res) {
   try {
     let data = req.body;
@@ -22,7 +19,7 @@ const createBlog = async function (req, res) {
         .status(400)
         .send({ status: false, msg: "authorId is invalid" });
     }
-    
+
     let authorDetails = await authourModel.findById(data["authorId"]);
 
     if (!authorDetails) {
@@ -30,14 +27,14 @@ const createBlog = async function (req, res) {
         .status(400)
         .send({ status: false, msg: " author is not present." });
     }
-    
+
     if (data["isPublished"] == true) {
       data["publishedAt"] = CurrentDate;
     }
     if (data["isdeleted"] == true) {
       data["deletedAt"] = CurrentDate;
     }
-    
+
     let savedData = await blogModel.create(data);
     res.status(201).send({ status: true, data: savedData });
   } catch (error) {
@@ -45,17 +42,13 @@ const createBlog = async function (req, res) {
   }
 };
 
-
-
-
-
 const getBlogs = async function (req, res) {
   try {
     let filter = req.query;
     let getBlogsDetails = await blogModel.find({
       $and: [filter, { isdeleted: false, isPublished: true }],
     });
-    
+
     if (!getBlogsDetails[0]) {
       return res
         .status(404)
@@ -67,27 +60,29 @@ const getBlogs = async function (req, res) {
   }
 };
 
-
-
-
-
 const updateBlogs = async function (req, res) {
   try {
-    let idOfBlog = req.params;
+    let blogId = req.params.blogId;
     let data = req.body;
+    let tokensId = req.decodedToken.userId;
 
-    let [title,body,tag, subcategories] = [data["title"], data["body"], data["tags"], data["subcategory"] ]
+    let [title, body, tag, subcategories] = [
+      data["title"],
+      data["body"],
+      data["tags"],
+      data["subcategory"],
+    ];
 
     let CurrentDate = moment().format("DD MM YYYY hh:mm:ss");
-    
-    if (!mongoose.isValidObjectId(idOfBlog.blogId)) {
+
+    if (!mongoose.isValidObjectId(blogId)) {
       return res
         .status(400)
         .send({ status: false, error: "blogId is invalid" });
     }
-    
+
     let updateBlog = await blogModel.findOneAndUpdate(
-      { _id: idOfBlog.blogId , isPublished: false },
+      { _id: blogId, isPublished: false },
       {
         $push: { tags: tag, subcategory: subcategories },
         $set: {
@@ -99,12 +94,17 @@ const updateBlogs = async function (req, res) {
       },
       { new: true }
     );
-    
-    if (!updateBlog) {
-      return res.status(404).send({ status: false, msg: "Blog does not exist." });
+
+    if (!updateBlog || updateBlog["isdeleted"] === true) {
+      return res
+        .status(404)
+        .send({ status: false, msg: "Blog does not exist." });
     }
-    if (updateBlog["isdeleted"] !== false) {
-      return res.status(404).send({ status: false, msg: "Blog not exist." });
+
+    if (updateBlog.authorId.toString() !== tokensId) {
+      return res
+        .status(401)
+        .send({ status: false, message: `Unauthorized access` });
     }
 
     res.status(200).send({ status: true, data: updateBlog });
@@ -113,63 +113,62 @@ const updateBlogs = async function (req, res) {
   }
 };
 
-
-
-
-
-
 const deleteBlog = async function (req, res) {
   try {
-    let idOfBlog = req.params;
+    let blogId = req.params.blogId;
+    let tokensId = req.decodedToken.userId;
 
-    if (!mongoose.isValidObjectId(idOfBlog.blogId)) {
-      return res
-        .status(400)
-        .send({ status: false, msg: "blogId is invalid" });
+    if (!mongoose.isValidObjectId(blogId)) {
+      return res.status(400).send({ status: false, msg: "blogId is invalid" });
     }
 
-    let getBlogDetails = await blogModel.findOne({ _id: idOfBlog.blogId });
+    let getBlogDetails = await blogModel.findOne({ _id: blogId });
 
     if (!getBlogDetails || getBlogDetails["isdeleted"] == true) {
       return res
         .status(404)
         .send({ status: false, msg: " Blog does not exist." });
     }
+
+    if (getBlogDetails.authorId.toString() !== tokensId) {
+      return res
+        .status(401)
+        .send({ status: false, message: `Unauthorized access` });
+    }
     let deleteBlog = await blogModel.updateOne(
-      { _id: idOfBlog.blogId },
+      { _id: blogId },
       { $set: { isdeleted: true } }
     );
     res.status(200).send();
-
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
 };
-
-
-
-
 
 const deletedocs = async function (req, res) {
   try {
-    let data = req.query;
-    let blog = await blogModel.updateMany(
-      data,
-      { $set: { isdeleted: true } },
-    );
-    if (blog["matchedCount"] === 0) {
+    let query = req.query;
+    let tokensId = req.decodedToken.userId;
+
+    let deleteBlogs = await blogModel.updateMany(query, {
+      $set: { isdeleted: true },
+    });
+
+    if (deleteBlogs["matchedCount"] === 0) {
       return res.status(404).send({ status: false, msg: "Blog not exist" });
     }
 
-    res.send();
+    if (query.authorId.toString() !== tokensId) {
+      return res
+        .status(401)
+        .send({ status: false, message: `Unauthorized access` });
+    }
 
+    res.send();
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
 };
-
-
-
 
 const loginUser = async function (req, res) {
   try {
@@ -196,12 +195,16 @@ const loginUser = async function (req, res) {
 
     res.setHeader("x-auth-token", token);
     return res.status(200).send({ status: true, data: token });
-
   } catch (error) {
     return res.status(500).send({ msg: "Server Error" });
   }
 };
 
-
-
-module.exports = { createBlog, getBlogs, updateBlogs, deleteBlog, deletedocs, loginUser };
+module.exports = {
+  createBlog,
+  getBlogs,
+  updateBlogs,
+  deleteBlog,
+  deletedocs,
+  loginUser,
+};

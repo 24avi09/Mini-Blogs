@@ -25,6 +25,7 @@ const authenticate = function (req, res, next) {
   }
 };
 
+<<<<<<< HEAD
 const authorization = async function (req, res, next) {
   try {
     let pathBlogId = req.params.blogId;
@@ -54,3 +55,6 @@ const authorization = async function (req, res, next) {
 };
 
 module.exports = { authenticate, authorization };
+=======
+module.exports = { authenticate };
+>>>>>>> bbd2e56c19375884fedb6bde64dccf5e6d14e0fd
