@@ -5,6 +5,7 @@ const authorModel = require("../Models/authorModel");
 
 const isValidName = function(body) {
     const nameRegex = /^[a-zA-Z_ ]*$/
+
     return nameRegex.test(body)
 }
 
@@ -169,3 +170,4 @@ const blogsValidation = async function(req, res, next){
 
 
 module.exports={  authorValidation , blogsValidation };
+

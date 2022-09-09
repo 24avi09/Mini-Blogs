@@ -1,10 +1,10 @@
 const authorModel = require("../Models/authorModel");
-// const { isValidName, isValidTitle ,isValidEmail,  isValidPassword, } = require("../validator/validator");
+
 
 const createAuthor = async function (req, res) {
   try {
     let authorDetails = req.body;
-    
+
 
     let savedData = await authorModel.create(authorDetails);
 

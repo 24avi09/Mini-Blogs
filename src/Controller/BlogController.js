@@ -33,7 +33,6 @@ const createBlog = async function (req, res) {
 };
 
 
-
 const getBlogs = async function (req, res) {
   try {
     let filter = req.query;
@@ -57,14 +56,13 @@ const getBlogs = async function (req, res) {
   }
 };
 
-
-
 const updateBlogs = async function (req, res) {
   try {
     let blogId = req.params.blogId;
     let dataForUpdate = req.body;
     let tokensId = req.decodedToken.userId;
     let {title, body, tags, subcategory} = {...dataForUpdate}
+
     let CurrentDate = moment().format("DD MM YYYY hh:mm:ss");
 
     if (!mongoose.isValidObjectId(blogId)) {
@@ -74,6 +72,7 @@ const updateBlogs = async function (req, res) {
     }
 
     if (Object.keys(dataForUpdate) == 0) {
+
       return res.status(404).send({ status: false, msg: "Provide a input to update" });
     }
 
@@ -81,6 +80,7 @@ const updateBlogs = async function (req, res) {
       { _id: blogId, isPublished: false },
       {
         $push: { tags: tags, subcategory: subcategory },
+
         $set: {
           title: title,
           body: body,
@@ -108,6 +108,7 @@ const updateBlogs = async function (req, res) {
     res.status(500).send({ status: false, error: error.message });
   }
 };
+
 
 
 
@@ -145,7 +146,6 @@ const deleteBlog = async function (req, res) {
     res.status(500).send({ status: false, error: error.message });
   }
 };
-
 
 
 const deletedocs = async function (req, res) {
@@ -221,3 +221,4 @@ const loginUser = async function (req, res) {
 
 
 module.exports = { createBlog, getBlogs, updateBlogs, deleteBlog, deletedocs, loginUser, };
+

@@ -28,4 +28,5 @@ router.delete("/blogs",authenticate, deletedocs)// API for deleting blog by quer
 router.post("/login", loginUser )// API for login author
 
 
+
 module.exports= router;
