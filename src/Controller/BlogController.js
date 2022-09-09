@@ -3,7 +3,7 @@ const blogModel = require("../Models/blogModel");
 const mongoose = require("mongoose");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
-const { isValidName , isValidTag, isValidAuthorId, } = require("../validator/validator");
+
 
 const createBlog = async function (req, res) {
   try {
@@ -33,6 +33,7 @@ const createBlog = async function (req, res) {
 };
 
 
+
 const getBlogs = async function (req, res) {
   try {
     let filter = req.query;
@@ -55,6 +56,7 @@ const getBlogs = async function (req, res) {
     res.status(500).send({ status: false, error: error.message });
   }
 };
+
 
 
 const updateBlogs = async function (req, res) {
@@ -108,6 +110,7 @@ const updateBlogs = async function (req, res) {
 };
 
 
+
 const deleteBlog = async function (req, res) {
   try {
     let blogId = req.params.blogId;
@@ -142,6 +145,7 @@ const deleteBlog = async function (req, res) {
     res.status(500).send({ status: false, error: error.message });
   }
 };
+
 
 
 const deletedocs = async function (req, res) {
@@ -179,6 +183,7 @@ const deletedocs = async function (req, res) {
 };
 
 
+
 const loginUser = async function (req, res) {
   try {
     let emailId = req.body.email;
@@ -212,5 +217,7 @@ const loginUser = async function (req, res) {
     return res.status(500).send({ msg: "Server Error" });
   }
 };
+
+
 
 module.exports = { createBlog, getBlogs, updateBlogs, deleteBlog, deletedocs, loginUser, };

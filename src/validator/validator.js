@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const authorModel = require("../Models/authorModel");
 
-
+////////////////////////////////////////////////////    Function for Validation      ////////////////////////////////////////////////////////////////////////
 
 const isValidName = function(body) {
     const nameRegex = /^[a-zA-Z_ ]*$/
@@ -29,6 +29,13 @@ const isValidEmail = function(email){
         return /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email);
 
 }
+
+
+
+
+///////////////////////////////////////////////////////    Author Validation      ////////////////////////////////////////////////////////////////////////
+
+
 
 const authorValidation = async function(req, res, next){
     let authorDetails = req.body;
@@ -94,6 +101,10 @@ const authorValidation = async function(req, res, next){
 }
 
 
+
+
+
+///////////////////////////////////////////////////////    Blogs Validation      ////////////////////////////////////////////////////////////////////////
 
 
 
