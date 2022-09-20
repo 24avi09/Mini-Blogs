@@ -1,6 +1,11 @@
 const jwt = require("jsonwebtoken");
 const blogModel = require("../Models/blogModel");
 
+
+
+////====================================================  Authentication   ================================================================////
+
+
 const authenticate = function (req, res, next) {
   try {
     let token = req.headers["x-api-key"];
