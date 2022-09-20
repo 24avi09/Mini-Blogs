@@ -8,43 +8,43 @@ const {authorValidation , blogsValidation }= require("../validator/validator");
 
 ////=================================  createAuthor  ========================================================///////
 
-router.post("/authors", authorValidation , createAuthor)// API for Creation of Author
+router.post("/authors", authorValidation , createAuthor)
 
 
 
 ////=================================  createBLog  ========================================================///////
 
-router.post("/blogs", blogsValidation , authenticate, createBlog)// API for Creation of blogs
+router.post("/blogs", blogsValidation , authenticate, createBlog)
 
 
 
 ////=================================  getBLog  ========================================================///////
 
-router.get("/blogs",authenticate, getBlogs)// API for getting of blogs 
+router.get("/blogs",authenticate, getBlogs)
 
 
 
 ////=================================  updateBLog  ========================================================///////
 
-router.put("/blogs/:blogId",authenticate, updateBlogs)// API for updating of blogs 
+router.put("/blogs/:blogId",authenticate, updateBlogs)
 
 
 
 ////=================================  deleteBLog by params  ========================================================///////
 
-router.delete("/blogs/:blogId",authenticate, deleteBlog)// API for deleting blog by path Params
+router.delete("/blogs/:blogId",authenticate, deleteBlog)
 
 
 
 ////=================================  deleteBLog by query  ========================================================///////
 
-router.delete("/blogs",authenticate, deletedocs)// API for deleting blog by query Params
+router.delete("/blogs",authenticate, deletedocs)
 
 
 
 ////=================================  loginUser  ========================================================///////
 
-router.post("/login", loginUser )// API for login author
+router.post("/login", loginUser )
 
 
 module.exports= router;
